@@ -19,10 +19,10 @@
 local MAV_SEVERITY = {EMERGENCY=0, ALERT=1, CRITICAL=2, ERROR=3, WARNING=4, NOTICE=5, INFO=6, DEBUG=7}
 
 
--- local PARAM_TABLE_KEY = 1
--- assert(param:add_table(PARAM_TABLE_KEY, "AAA_", 2), 'could not add param table')
--- assert(param:add_param(PARAM_TABLE_KEY, 1,  'ENABLE', 0), 'could not add param1')
--- assert(param:add_param(PARAM_TABLE_KEY, 2,  'VALUE', 0), 'could not add param2')
+local PARAM_TABLE_KEY = 1
+assert(param:add_table(PARAM_TABLE_KEY, "LUA_ALT_", 2), 'could not add param table')
+assert(param:add_param(PARAM_TABLE_KEY, 1,  'ENABLE', 0), 'could not add param1')
+assert(param:add_param(PARAM_TABLE_KEY, 2,  'VALUE', 0), 'could not add param2')
 
 -- 配置参数
 local SERIAL_PORT = 1     -- 串口端口号，对应SERIALx_PROTOCOL = 28的端口
@@ -45,9 +45,6 @@ local delay_complete = false -- 延迟完成状态
 -- lua altitude enable and value
 local LUA_ALT_ENABLE = Parameter()
 local LUA_ALT_VALUE = Parameter()
-local alt_enable = 0
-local alt_value = 0
-
 
 
 -- 查找并初始化串口
@@ -146,13 +143,9 @@ function update()
 
   LUA_ALT_ENABLE:init('LUA_ALT_ENABLE')
   LUA_ALT_VALUE:init('LUA_ALT_VALUE')
-  -- LUA_ALT_ENABLE:init('AAA_ENABLE')
-  -- LUA_ALT_VALUE:init('AAA_VALUE')
 
-  -- 读取 LUA_ALT_ENABLE 和 LUA_ALT_VALUE
-  alt_enable = LUA_ALT_ENABLE:get()
-  -- alt_value = LUA_ALT_VALUE:get()
-  if alt_enable == 0 then
+  -- 读取 LUA_ALT_ENABLE
+  if (LUA_ALT_ENABLE:get()) == 0 then
     gcs:send_text(MAV_SEVERITY.INFO, "read lua alt disable")
     return update, 2000
   end
